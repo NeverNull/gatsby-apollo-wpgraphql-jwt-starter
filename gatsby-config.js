@@ -1,8 +1,17 @@
+let activeEnv =
+  process.env.GATSBY_ACTIVE_ENV || process.env.NODE_ENV || "development"
+
+console.log(`Using environment config: '${activeEnv}'`)
+
+require("dotenv").config({
+  path: `.env.${activeEnv}`,
+})
+
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Default Starter`,
-    description: `Kick off your next, great Gatsby project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
-    author: `@gatsbyjs`,
+    title: `Gatsby Apollo WPGraphQL JWT Starter`,
+    description: `This project aims to serve as a good starting point, to handle user registration and login with Apollo, WPGraphQL and WPGraphQL JWT Authentication.`,
+    author: `@NeverNull`,
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
@@ -27,8 +36,14 @@ module.exports = {
         icon: `src/images/gatsby-icon.png`, // This path is relative to the root of the site.
       },
     },
-    // this (optional) plugin enables Progressive Web App + Offline functionality
-    // To learn more, visit: https://gatsby.dev/offline
-    // `gatsby-plugin-offline`,
+    {
+      resolve: "gatsby-source-graphql",
+      options: {
+        typeName: "WPGraphQL",
+        fieldName: "wpgraphql",
+        url: `${process.env.GRAPHQL_URL}`,
+        refetchInterval: 60,
+      },
+    },
   ],
 }

@@ -1,5 +1,15 @@
-.idea
+# Environment Vars
+.env.development
+.env.production
 
+
+# Apollo GraphQL IntelliJ plugin
+
+.graphqlconfig
+schema.graphql
+
+# IDEs
+.idea
 
 # Logs
 logs
