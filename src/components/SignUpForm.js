@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import useFormFields from "../hooks/useFormFields"
 import { getUuid } from "../services/utilities"
-import { setRefreshToken } from "../services/auth"
+import { setAuthToken, setRefreshToken } from "../services/auth"
 import { useAuth } from "../hooks/useAuth"
 import { navigate } from "gatsby"
 
@@ -13,7 +13,6 @@ const REGISTER_USER = gql`
             user {
                 jwtAuthToken
                 jwtRefreshToken
-                jwtAuthExpiration
             }
         }
     }
@@ -59,7 +58,8 @@ const SignUpForm = () => {
         },
       },
     }).then((response) => {
-      setRefreshToken(response.data.registerUser.user)
+      setAuthToken(response.data.registerUser.user.jwtAuthToken)
+      setRefreshToken(response.data.registerUser.user.jwtRefreshToken, () => navigate("/dashboard/"))
       setIsLoading(false)
     })
   }

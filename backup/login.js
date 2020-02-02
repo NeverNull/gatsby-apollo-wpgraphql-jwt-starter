@@ -1,10 +1,10 @@
 import React from "react"
 
-import Layout from "../components/Layout"
-import Seo from "../components/Seo"
-import LoginForm from "../components/LoginForm"
+import Layout from "../src/components/Layout"
+import Seo from "../src/components/Seo"
+import LoginForm from "../src/components/LoginForm"
 import { navigate } from "gatsby"
-import { useAuth } from "../hooks/useAuth"
+import { useAuth } from "../src/hooks/useAuth"
 
 const Login = () => {
   const auth = useAuth();

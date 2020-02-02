@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from "react"
-import { AuthContext } from "../contexts/AuthContext"
+import { AuthContext } from "./AuthContext"
 import { gql, useMutation } from "@apollo/client"
-import { getUuid } from "../services/utilities"
-import { setRefreshToken } from "../services/auth"
+import { getUuid } from "../src/services/utilities"
+import { setRefreshToken } from "../src/services/auth"
 import { navigate } from "gatsby"
 
 const LOGIN_USER = gql`
