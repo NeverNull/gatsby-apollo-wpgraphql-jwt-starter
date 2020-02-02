@@ -1,11 +1,10 @@
-import { ApolloClient, ApolloLink, from, InMemoryCache } from "@apollo/client"
+import { ApolloClient, ApolloLink, from, HttpLink, InMemoryCache } from "@apollo/client"
 import { TokenRefreshLink } from "apollo-link-token-refresh"
 import { onError } from "apollo-link-error"
-import { BatchHttpLink } from "@apollo/link-batch-http"
 import fetch from "isomorphic-fetch"
+import uuid from "uuid"
 
 import possibleTypes from "./possibleTypes.json"
-import { getUuid } from "../src/services/utilities"
 import {
   deleteRefreshToken,
   getInMemoryAuthToken,
@@ -17,21 +16,13 @@ import {
 import { navigate } from "gatsby"
 
 
-const batchHttpLink = new BatchHttpLink({
-  uri: process.env.GRAPHQL_URL,
-  fetch,
-  batchMax: 100,
-  batchInterval: 10,
-  // credentials: 'include',
-})
-
-// const httpLink = new HttpLink(
-//   {
-//     uri: process.env.GRAPHQL_URL,
-//     fetch,
-//     credentials: 'include',
-//   }
-// )
+const httpLink = new HttpLink(
+  {
+    uri: process.env.GRAPHQL_URL,
+    fetch,
+    // credentials: 'include',
+  }
+)
 
 const authMiddleware = new ApolloLink((operation, forward) => {
   // get the authentication token from local storage if it exists
@@ -75,7 +66,7 @@ const refreshTokenLink = new TokenRefreshLink({
         variables: {
           input: {
             jwtRefreshToken: getRefreshToken(),
-            clientMutationId: getUuid(),
+            clientMutationId: uuid(),
           },
         },
       }),
@@ -115,8 +106,7 @@ export const client = new ApolloClient({
     authMiddleware,
     onErrorLink,
     refreshTokenLink,
-    batchHttpLink,
-    // httpLink
+    httpLink
   ]),
   cache: new InMemoryCache({ possibleTypes }),
 })

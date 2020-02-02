@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import useFormFields from "../hooks/useFormFields"
-import { getUuid } from "../services/utilities"
+import uuid from "uuid"
 import { setAuthToken, setRefreshToken } from "../services/auth"
 import { useAuth } from "../hooks/useAuth"
 import { navigate } from "gatsby"
@@ -49,7 +49,7 @@ const SignUpForm = () => {
     await registerUser({
       variables: {
         input: {
-          clientMutationId: getUuid(),
+          clientMutationId: uuid(),
           username: fields.email,
           firstName: fields.firstName || null,
           lastName: fields.lastName || null,

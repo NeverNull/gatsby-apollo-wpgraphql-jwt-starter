@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import useFormFields from "../hooks/useFormFields"
 import { gql, useMutation } from "@apollo/client"
-import { getUuid } from "../services/utilities"
+import uuid from "uuid"
 import { setAuthToken, setRefreshToken } from "../services/auth"
 import { navigate } from "gatsby"
 import { useAuth } from "../hooks/useAuth"
@@ -45,7 +45,7 @@ const LoginForm = () => {
     loginUser({
       variables: {
         input: {
-          clientMutationId: getUuid(),
+          clientMutationId: uuid(),
           username: fields.username,
           password: fields.password,
         },

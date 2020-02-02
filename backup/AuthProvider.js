@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from "react"
 import { AuthContext } from "./AuthContext"
 import { gql, useMutation } from "@apollo/client"
-import { getUuid } from "../src/services/utilities"
 import { setRefreshToken } from "../src/services/auth"
 import { navigate } from "gatsby"
+import uuid from "uuid"
+
 
 const LOGIN_USER = gql`
     mutation LoginUser($input: LoginInput!) {
@@ -28,7 +29,7 @@ export const AuthProvider = ({ children }) => {
       loginUser: ({ username, password }) => loginUser({
         variables: {
           input: {
-            clientMutationId: getUuid(),
+            clientMutationId: uuid(),
             username: username,
             password: password,
           },

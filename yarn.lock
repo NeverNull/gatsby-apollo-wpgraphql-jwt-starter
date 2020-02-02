@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@apollo/client@^3.0.0-beta.23", "@apollo/client@^3.0.0-beta.31":
+"@apollo/client@^3.0.0-beta.31":
   version "3.0.0-beta.31"
   resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.0.0-beta.31.tgz#385f4a42281709111dbd6c5f557559757bca4ee6"
   integrity sha512-P0NRmqrANlwn8coFo2fT9AH3IRuIg6H8vy0RU1jZ57HnpzIVkfcYSZ7eXXmKgIoHpe9cx9ftJrF9o0E3kU9+1A==
@@ -16,23 +16,6 @@
     ts-invariant "^0.4.4"
     tslib "^1.10.0"
     zen-observable "^0.8.14"
-
-"@apollo/link-batch-http@^2.0.0-beta.3":
-  version "2.0.0-beta.3"
-  resolved "https://registry.yarnpkg.com/@apollo/link-batch-http/-/link-batch-http-2.0.0-beta.3.tgz#fc5f17c1521c4fdab083c23d820597545bdfd73c"
-  integrity sha512-5/OWwlvGIPzDodbNUOoUVfwrYUpXl7KfwvphXcTUi5ql1ll7W0o+rczlHzrrE0yY7cFxZ9ys8lz/kNllLgaMyQ==
-  dependencies:
-    "@apollo/client" "^3.0.0-beta.23"
-    "@apollo/link-batch" "^2.0.0-beta.3"
-    tslib "^1.9.3"
-
-"@apollo/link-batch@^2.0.0-beta.3":
-  version "2.0.0-beta.3"
-  resolved "https://registry.yarnpkg.com/@apollo/link-batch/-/link-batch-2.0.0-beta.3.tgz#4a63f0d559ab7824204ebc4409cc295e4f8af2cc"
-  integrity sha512-jHSksoQC8BQrv2LdWiRh16W9yH0lFG0CfPQo13xeG5qudH65znGDmpT+8mjKtF2wHDC13IXabkEgwKjt4+1X3Q==
-  dependencies:
-    "@apollo/client" "^3.0.0-beta.23"
-    tslib "^1.9.3"
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.5.5", "@babel/code-frame@^7.8.3":
   version "7.8.3"

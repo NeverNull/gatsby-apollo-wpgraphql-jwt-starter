@@ -11,7 +11,7 @@ import {
 import { gql, useMutation } from "@apollo/client"
 import useNetwork from "./useNetwork"
 import { navigate } from "gatsby"
-import { getUuid } from "../services/utilities"
+import uuid from "uuid"
 
 const AuthContext = createContext()
 
@@ -53,7 +53,7 @@ const useProvideAuth = () => {
       refreshToken({
         variables: {
           input: {
-            clientMutationId: getUuid(),
+            clientMutationId: uuid(),
             jwtRefreshToken: getRefreshToken(),
           },
         },
