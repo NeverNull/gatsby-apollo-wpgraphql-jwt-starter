@@ -1,8 +1,10 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { gql, useMutation } from "@apollo/client"
 import useFormFields from "../hooks/useFormFields"
 import { getUuid } from "../services/utilities"
-import { setJwt } from "../services/auth"
+import { setRefreshToken } from "../services/auth"
+import { useAuth } from "../hooks/useAuth"
+import { navigate } from "gatsby"
 
 
 const REGISTER_USER = gql`
@@ -12,7 +14,6 @@ const REGISTER_USER = gql`
                 jwtAuthToken
                 jwtRefreshToken
                 jwtAuthExpiration
-                isJwtAuthSecretRevoked
             }
         }
     }
@@ -23,6 +24,16 @@ const labelStyle = {
 }
 
 const SignUpForm = () => {
+  const auth = useAuth();
+
+  useEffect(() => {
+
+    if (auth.isLoggedIn()) {
+      navigate(`/dashboard/`, {replace: true})
+    }
+  }, [auth])
+
+
   const [fields, handleFieldChange] = useFormFields({
     email: "",
     firstName: "",
@@ -48,15 +59,12 @@ const SignUpForm = () => {
         },
       },
     }).then((response) => {
-      // console.log("Response", data)
-
-      setJwt(response.data.registerUser.user)
+      setRefreshToken(response.data.registerUser.user)
       setIsLoading(false)
     })
   }
 
   return <form method="post" onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-    {isLoading ? "isLoading" : "is not loading ..."}
     <div style={{display: "flex", flexDirection: "column"}}>
 
       <label htmlFor="email" style={labelStyle}><b>Email</b></label>
@@ -77,6 +85,8 @@ const SignUpForm = () => {
     </div>
 
     <button style={{ margin: "16px 0" }} type="submit" >Register</button>
+    {isLoading ? <p>is Loading ...</p> : null}
+
   </form>
 }
 

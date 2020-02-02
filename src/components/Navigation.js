@@ -13,8 +13,8 @@ const Navigation = () => {
         Navigation:
       </div>
       <ul style={{marginLeft: 0}}>
-        <li style={style}><Link to={"/login/"} >Login</Link></li>
-        <li style={style}><Link to={"/signup/"} >SignUp</Link></li>
+        <li style={style}><Link to={"/dashboard/login/"} >Login</Link></li>
+        <li style={style}><Link to={"/dashboard/signup/"} >SignUp</Link></li>
         <li style={style}><Link to={"/dashboard/"} >Dashboard</Link></li>
       </ul>
     </nav>

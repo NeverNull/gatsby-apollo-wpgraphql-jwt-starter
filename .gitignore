@@ -6,7 +6,7 @@
 # Apollo GraphQL IntelliJ plugin
 
 .graphqlconfig
-schema.graphql
+apollo/schema.graphql
 
 # IDEs
 .idea

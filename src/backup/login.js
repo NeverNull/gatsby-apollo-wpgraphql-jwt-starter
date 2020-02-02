@@ -3,12 +3,15 @@ import React from "react"
 import Layout from "../components/Layout"
 import Seo from "../components/Seo"
 import LoginForm from "../components/LoginForm"
-import { isAuthenticated } from "../services/auth"
 import { navigate } from "gatsby"
+import { useAuth } from "../hooks/useAuth"
 
 const Login = () => {
-  if (isAuthenticated()) {
-    navigate(`/dashboard/`)
+  const auth = useAuth();
+
+  if (auth.isLoggedIn()) {
+    navigate(`/dashboard/`, {replace: true})
+    return null
   }
 
   return (

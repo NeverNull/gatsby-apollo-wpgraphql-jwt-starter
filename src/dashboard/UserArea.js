@@ -1,7 +1,6 @@
 import React from "react"
 
 const UserArea = () => {
-  console.log("UserArea")
 
   return (
     <div>

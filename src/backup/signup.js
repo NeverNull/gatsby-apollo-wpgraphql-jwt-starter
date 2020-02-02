@@ -3,14 +3,13 @@ import React from "react"
 import Seo from "../components/Seo"
 import SignUpForm from "../components/SignUpForm"
 import Layout from "../components/Layout"
-import { isAuthenticated } from "../services/auth"
 import { navigate } from "gatsby"
+import { useAuth } from "../hooks/useAuth"
 
 const SignUp = () => {
-  if (
-    isAuthenticated()
-  ) {
-    // If we’re not logged in, redirect to the home page.
+  const auth = useAuth();
+
+  if (auth.isLoggedIn()) {
     navigate(`/dashboard/`, {replace: true})
     return null
   }

@@ -1,13 +1,38 @@
-import React, { useContext } from "react"
-import { AuthContext } from "../contexts/AuthContext"
+import React, { useEffect } from "react"
 import useFormFields from "../hooks/useFormFields"
+import { gql, useMutation } from "@apollo/client"
+import { getUuid } from "../services/utilities"
+import { setAuthToken, setRefreshToken } from "../services/auth"
+import { navigate } from "gatsby"
+import { useAuth } from "../hooks/useAuth"
+
+const LOGIN_USER = gql`
+  mutation LoginUser($input: LoginInput!) {
+    login(input: $input) {
+      authToken
+      refreshToken
+      user {
+        jwtAuthExpiration
+      }
+    }
+  }
+`
 
 const labelStyle = {
   marginTop: 16
 }
 
 const LoginForm = () => {
-  const authContext = useContext(AuthContext)
+  const auth = useAuth();
+
+  useEffect(() => {
+
+    if (auth.isLoggedIn()) {
+      navigate(`/dashboard/`, {replace: true})
+    }
+  }, [auth])
+
+  const [loginUser, { data: loginData }] = useMutation(LOGIN_USER)
 
   const [fields, handleFieldChange] = useFormFields({
     username: "",
@@ -17,11 +42,24 @@ const LoginForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    authContext.loginUser({
-        username: fields.username,
-        password: fields.password,
+    loginUser({
+      variables: {
+        input: {
+          clientMutationId: getUuid(),
+          username: fields.username,
+          password: fields.password,
+        },
       },
-    )
+    }).then((response) => {
+      console.log("Response", response)
+      const { login } = response.data
+      const authExpiration = login.user ? login.user.jwtAuthExpiration : null
+
+      if(login) {
+        setAuthToken(login.authToken, authExpiration)
+        setRefreshToken(login.refreshToken, () => navigate("/dashboard/"))
+      }
+    })
   }
 
   return (

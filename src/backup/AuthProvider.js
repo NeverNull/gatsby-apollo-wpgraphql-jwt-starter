@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react"
 import { AuthContext } from "../contexts/AuthContext"
 import { gql, useMutation } from "@apollo/client"
 import { getUuid } from "../services/utilities"
-import { setJwt } from "../services/auth"
+import { setRefreshToken } from "../services/auth"
 import { navigate } from "gatsby"
 
 const LOGIN_USER = gql`
@@ -12,7 +12,6 @@ const LOGIN_USER = gql`
                 jwtAuthToken
                 jwtRefreshToken
                 jwtAuthExpiration
-                isJwtAuthSecretRevoked
                 username
                 nicename
             }
@@ -34,17 +33,20 @@ export const AuthProvider = ({ children }) => {
             password: password,
           },
         },
-      }).then(({ data }) => {
-        const { login } = data
+      }).then((response) => {
+        console.log("Response", response)
+        // console.log("Data", data)
+        const { login } = response.data
         const user = (login && login.user) ? login.user : {}
 
-        setJwt(user, () => navigate("/dashboard/"))
+        setRefreshToken(user, () => navigate("/dashboard/"))
       }),
       loginData: loginData,
       userData: userData,
       setUserData: setUserData
     }
   ), [loginUser, loginData, userData, setUserData])
+
 
   return (
     <AuthContext.Provider value={providerValue}>

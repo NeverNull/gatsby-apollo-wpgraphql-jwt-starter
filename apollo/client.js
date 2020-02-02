@@ -1,4 +1,4 @@
-import { ApolloClient, ApolloLink, InMemoryCache, from } from "@apollo/client"
+import { ApolloClient, ApolloLink, from, InMemoryCache } from "@apollo/client"
 import { TokenRefreshLink } from "apollo-link-token-refresh"
 import { onError } from "apollo-link-error"
 import { BatchHttpLink } from "@apollo/link-batch-http"
@@ -7,12 +7,12 @@ import fetch from "isomorphic-fetch"
 import possibleTypes from "./possibleTypes.json"
 import { getUuid } from "../src/services/utilities"
 import {
-  getAuthToken,
-  isTokenExpired,
+  deleteRefreshToken,
+  getInMemoryAuthToken,
   getRefreshToken,
-  setAuthToken,
-  deleteJwt,
+  isTokenExpired,
   logout,
+  setAuthToken,
 } from "../src/services/auth"
 import { navigate } from "gatsby"
 
@@ -22,28 +22,39 @@ const batchHttpLink = new BatchHttpLink({
   fetch,
   batchMax: 100,
   batchInterval: 10,
+  // credentials: 'include',
 })
+
+// const httpLink = new HttpLink(
+//   {
+//     uri: process.env.GRAPHQL_URL,
+//     fetch,
+//     credentials: 'include',
+//   }
+// )
 
 const authMiddleware = new ApolloLink((operation, forward) => {
   // get the authentication token from local storage if it exists
-  const token = getAuthToken()
-  if (token) {
-    operation.setContext({
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-  }
+  const token = getInMemoryAuthToken().authToken
+
+  operation.setContext({
+    headers: {
+      Authorization: token ? `Bearer ${token}` : '',
+    },
+  })
+
   return forward(operation)
 })
 
 const refreshTokenLink = new TokenRefreshLink({
   accessTokenField: `refreshJwtAuthToken`,
   isTokenValidOrUndefined: () => {
-    const token = getAuthToken()
+    const token = getInMemoryAuthToken().authToken
     return !token || (token && !isTokenExpired(token))
   },
   fetchAccessToken: () => {
+    console.log("refreshTokenLink")
+    // TODO: Check if refreshJwtAuthToken can return authExpiration
     const query = `
           mutation RefreshJWTAuthToken($input: RefreshJwtAuthTokenInput!) {
             refreshJwtAuthToken(input: $input) {
@@ -54,6 +65,7 @@ const refreshTokenLink = new TokenRefreshLink({
     return fetch(process.env.GRAPHQL_URL, {
       method: "POST",
       mode: "cors",
+      // credentials: 'include',
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -75,20 +87,21 @@ const refreshTokenLink = new TokenRefreshLink({
     setAuthToken(response.authToken)
   },
   // handleResponse: (operation, accessTokenField) => response => {
+  //   console.log("HandleResponse:", response)
   // },
   handleError: err => {
     console.error(err)
-    deleteJwt()
+    deleteRefreshToken()
   },
 })
 
 const onErrorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
     graphQLErrors.forEach(({ message, locations, path, extensions }) => {
-      if (extensions.code === "invalid-jwt") {
-        logout(() => navigate("/login/"))
+      if (extensions && extensions.code === "invalid-jwt") {
+        logout(() => navigate("/dashboard/"))
       }
-      console.log(`[GraphQL error]:`, `Message: ${message}, Location: ${locations}, Path: ${path}, Extension: ${extensions}`)
+      console.log(`[GraphQL error]:`, {Message: message, Location: locations, Path: path, Extension: extensions})
     })
   }
 
@@ -99,10 +112,11 @@ const onErrorLink = onError(({ graphQLErrors, networkError }) => {
 
 export const client = new ApolloClient({
   link: from([
-    refreshTokenLink,
     authMiddleware,
     onErrorLink,
+    refreshTokenLink,
     batchHttpLink,
+    // httpLink
   ]),
   cache: new InMemoryCache({ possibleTypes }),
 })

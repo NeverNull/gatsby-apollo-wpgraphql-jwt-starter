@@ -26,10 +26,15 @@ WPGraphQL will be updated, as soon as some bugs are fixed. Also Apollo v3 might 
 
 2. **Check your permalinks**
 
-    Make sure your graphql endpoint works as expected.
-    
+    Make sure your graphql endpoint works as expected. 
     See these docs: https://docs.wpgraphql.com/getting-started/install-and-activate/#verify-the-endpoint-works
-
+  
+3. **Define a secret**
+   In your wp-config.php deinfe a secret. You can use WordPress Salt generator (https://api.wordpress.org/secret-key/1.1/salt/) to generate a Secret.
+   ```
+   define( 'GRAPHQL_JWT_AUTH_SECRET_KEY', 'your-secret-token' );
+   ```
+   
 ### Gatsby
 
 1.  **Install modules**
@@ -48,7 +53,6 @@ WPGraphQL will be updated, as soon as some bugs are fixed. Also Apollo v3 might 
     
     ```dotenv
     GRAPHQL_URL=http://your-domain/graphql
-    
     ```
    
     If you run `yarn run build` you need a `.env.production` in you root folder. Or you run it in your CI wit CI-Variables.
