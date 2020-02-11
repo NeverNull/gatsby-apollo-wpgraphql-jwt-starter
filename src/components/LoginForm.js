@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import useFormFields from "../hooks/useFormFields"
 import { gql, useMutation } from "@apollo/client"
-import uuid from "uuid"
+import uuid from "uuid/v4"
 import { setAuthToken, setRefreshToken } from "../services/auth"
 import { navigate } from "gatsby"
 import { useAuth } from "../hooks/useAuth"
@@ -11,9 +11,6 @@ const LOGIN_USER = gql`
     login(input: $input) {
       authToken
       refreshToken
-      user {
-        jwtAuthExpiration
-      }
     }
   }
 `
@@ -51,12 +48,11 @@ const LoginForm = () => {
         },
       },
     }).then((response) => {
-      console.log("Response", response)
+      // console.log("Response", response)
       const { login } = response.data
-      const authExpiration = login.user ? login.user.jwtAuthExpiration : null
 
       if(login) {
-        setAuthToken(login.authToken, authExpiration)
+        setAuthToken(login.authToken)
         setRefreshToken(login.refreshToken, () => navigate("/dashboard/"))
       }
     })

@@ -58,8 +58,13 @@ const SignUpForm = () => {
         },
       },
     }).then((response) => {
-      setAuthToken(response.data.registerUser.user.jwtAuthToken)
-      setRefreshToken(response.data.registerUser.user.jwtRefreshToken, () => navigate("/dashboard/"))
+      const { registerUser } = response.data
+
+      if(registerUser && registerUser.user) {
+        setAuthToken(response.data.registerUser.user.jwtAuthToken)
+        setRefreshToken(response.data.registerUser.user.jwtRefreshToken, () => navigate("/dashboard/"))
+      }
+
       setIsLoading(false)
     })
   }

@@ -13,7 +13,7 @@ import useNetwork from "./useNetwork"
 import { navigate } from "gatsby"
 import uuid from "uuid"
 
-const AuthContext = createContext()
+const AuthContext = createContext(null)
 
 export const AuthProvider = ({ children }) => (
   <AuthContext.Provider value={useProvideAuth()}>
@@ -46,9 +46,11 @@ const useProvideAuth = () => {
   //   getInMemoryAuthToken().authToken && isTokenExpired(getInMemoryAuthToken().authToken)
 
   const isLoggedIn = () =>
-    getInMemoryAuthToken().authToken && !isTokenExpired(getInMemoryAuthToken().authToken)
+    getInMemoryAuthToken() && !isTokenExpired(getInMemoryAuthToken())
 
   useEffect(() => {
+    // TODO: This should only happen in one place. Either we implement an
+    //       interval here, or we use the apollo-link-token-refresh in client.js
     if (isOnline && getRefreshToken()) {
       refreshToken({
         variables: {

@@ -26,7 +26,7 @@ const httpLink = new HttpLink(
 
 const authMiddleware = new ApolloLink((operation, forward) => {
   // get the authentication token from local storage if it exists
-  const token = getInMemoryAuthToken().authToken
+  const token = getInMemoryAuthToken()
 
   operation.setContext({
     headers: {
@@ -40,7 +40,7 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 const refreshTokenLink = new TokenRefreshLink({
   accessTokenField: `refreshJwtAuthToken`,
   isTokenValidOrUndefined: () => {
-    const token = getInMemoryAuthToken().authToken
+    const token = getInMemoryAuthToken()
     return !token || (token && !isTokenExpired(token))
   },
   fetchAccessToken: () => {
@@ -65,8 +65,8 @@ const refreshTokenLink = new TokenRefreshLink({
         query,
         variables: {
           input: {
-            jwtRefreshToken: getRefreshToken(),
             clientMutationId: uuid(),
+            jwtRefreshToken: getRefreshToken(),
           },
         },
       }),
@@ -75,7 +75,7 @@ const refreshTokenLink = new TokenRefreshLink({
   handleFetch: response => {
     if (response.errors && response.errors.length) return
     console.log("HandleFetch", response)
-    setAuthToken(response.authToken)
+    setAuthToken(response.refreshJwtAuthToken.authToken)
   },
   // handleResponse: (operation, accessTokenField) => response => {
   //   console.log("HandleResponse:", response)

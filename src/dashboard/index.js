@@ -1,6 +1,8 @@
-import React from "react"
+import React, { useEffect } from "react"
 import Seo from "../components/Seo"
 import { gql, useQuery } from "@apollo/client"
+import { useUser } from "../hooks/useUser"
+import ProgressLoader from "../components/ProgressLoader"
 
 
 const GET_USER = gql`
@@ -9,14 +11,30 @@ const GET_USER = gql`
       firstName
       lastName
       email
+      username
     }
   }
 `
 
 const DashboardIndex = () => {
   const { data, loading, error, refetch } = useQuery(GET_USER)
+  const [user, setUser] = useUser();
 
-  const user = data && data.viewer
+
+  useEffect(() => {
+    if (data) {
+      setUser({
+        ...user,
+        username: data.viewer.username,
+        firstName: data.viewer.firstName,
+        lastName: data.viewer.lastName,
+        email: data.viewer.email,
+      })
+    }
+
+  }, [data])
+
+  if (loading) return <ProgressLoader/>
 
   return (
     <>

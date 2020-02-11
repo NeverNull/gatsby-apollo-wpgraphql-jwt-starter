@@ -60,14 +60,14 @@ export const setAuthToken = (authToken) => {
 export const setRefreshToken = (refreshToken, callback) => {
   if (!isBrowser) return
   if (!refreshToken) {
-    console.log("[setRefreshToken]", `Refresh token shouldn't be ${refreshToken}.`)
+    // console.log("[setRefreshToken]", `Refresh token shouldn't be ${refreshToken}.`)
     return
   }
 
   localStorage.setItem(REFRESH_TOKEN_KEY, JSON.stringify(refreshToken))
   localStorage.removeItem(LOGGED_OUT_KEY)
 
-  console.log("setRefreshToken", inMemoryAuthToken)
+  // console.log("setRefreshToken", inMemoryAuthToken)
 
   if (callback) {
     callback()
@@ -84,7 +84,12 @@ export const setLoggedOutTime = () => {
 
 export const getInMemoryAuthToken = () => {
   if (!isBrowser) return null
-  return inMemoryAuthToken
+  return inMemoryAuthToken.authToken
+}
+
+export const getAuthTokenExpiration = () => {
+  if (!isBrowser) return null
+  return inMemoryAuthToken.authExpiration
 }
 
 export const getRefreshToken = () => {
